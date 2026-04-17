@@ -3,244 +3,215 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ryoko 💜</title>
+<title>Dentro de mi mente 💜</title>
 
 <style>
 body{
   margin:0;
   overflow:hidden;
-  background:black;
-  font-family:sans-serif;
-  color:white;
+  background: radial-gradient(circle at center, #0a0015, #000);
+  font-family: Arial, sans-serif;
 }
 
-/* SCREENS */
-.screen{
-  position:absolute;
-  inset:0;
-  display:none;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-}
-.active{display:flex;}
-
-/* INTRO */
-.glitch{
-  font-size:26px;
-  animation:glitch 0.3s infinite;
-}
-@keyframes glitch{
-  0%{text-shadow:2px 2px purple;}
-  50%{text-shadow:-2px -2px pink;}
-  100%{text-shadow:2px -2px violet;}
-}
-
-/* WORLD */
-#world{
-  position:absolute;
-  inset:0;
-  background:radial-gradient(circle,#140822,#000);
-  overflow:hidden;
-}
-
-/* PLAYER */
-#player{
-  position:absolute;
-  bottom:60px;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:40px;
-  transition:0.2s;
-}
-
-/* WALK */
-.walk{
-  animation:walk 0.5s infinite alternate;
-}
-@keyframes walk{
-  from{transform:translateX(-50%) translateY(0);}
-  to{transform:translateX(-50%) translateY(-5px);}
-}
-
-/* THOUGHTS */
+/* thoughts */
 .thought{
   position:absolute;
-  padding:10px;
-  border-radius:12px;
+  padding:10px 15px;
+  background:#ff4fd8;
+  color:white;
+  border-radius:20px;
   font-size:14px;
   cursor:pointer;
+  box-shadow:0 0 15px #ff4fd8;
+  transition:0.3s;
+}
+.thought:hover{transform:scale(1.1);}
+
+.activated{
+  background:#a64dff;
+  box-shadow:0 0 25px #a64dff;
+}
+
+/* message */
+#msg{
+  position:absolute;
+  bottom:20px;
+  width:100%;
+  text-align:center;
+  color:#fff;
+  font-size:18px;
+  opacity:0;
   transition:0.5s;
 }
 
-.good{
-  background:#ff66cc;
-  box-shadow:0 0 20px #ff66cc;
-}
-
-.dark{
-  background:#111;
-  color:#777;
-}
-
-/* PARTICLES */
-.particle{
+/* characters */
+.char{
   position:absolute;
-  color:#ff66cc;
-  animation:float 4s linear forwards;
+  bottom:50px;
+  font-size:50px;
+  transition:3s;
 }
-@keyframes float{
-  to{transform:translateY(-200px);opacity:0;}
-}
+#ahmad{left:10%;}
+#ryoko{right:10%;}
 
-/* FINAL */
+/* final */
 #final{
   position:absolute;
-  inset:0;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  color:#fff;
   text-align:center;
   opacity:0;
-  transition:2s;
 }
 
-#final.show{opacity:1;}
-
-.card{
-  background:rgba(0,0,0,0.8);
-  padding:30px;
-  border-radius:20px;
-  box-shadow:0 0 30px purple;
+/* particles */
+.particle{
+  position:absolute;
+  color:#ff4fd8;
+  font-size:20px;
+  animation:float 3s linear infinite;
 }
-
+@keyframes float{
+  from{transform:translateY(0);opacity:1;}
+  to{transform:translateY(-100px);opacity:0;}
+}
 </style>
 </head>
 
 <body>
 
-<!-- INTRO -->
-<div id="intro" class="screen active">
-  <h1 class="glitch">Accediendo a la mente de Ahmad... 💜</h1>
-</div>
+<div id="msg"></div>
 
-<!-- WORLD -->
-<div id="world" class="screen">
-  <div id="player">🧑‍🦱</div>
-</div>
+<div id="ahmad" class="char">🧑‍🦱</div>
+<div id="ryoko" class="char">👩</div>
 
-<!-- FINAL -->
-<div id="final">
-  <div class="card" id="finalText"></div>
-</div>
+<div id="final"></div>
 
-<audio id="music" loop>
-  <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3">
-</audio>
+<audio id="music" src="https://www.bensound.com/bensound-music/bensound-love.mp3"></audio>
 
 <script>
 
-/* START */
-setTimeout(()=>{
-  document.getElementById("intro").classList.remove("active");
-  document.getElementById("world").classList.add("active");
+/* THOUGHTS + MESSAGES */
+const thoughts = [
+["miedo","Me hiciste fuerte para enfrentar mis miedos 💜"],
+["soledad","Contigo nunca me siento solo 💜"],
+["dudas","Eres mi certeza 💜"],
+["oscuridad","Trajiste luz a mi mundo 💜"],
+["cansancio","Eres mi descanso 💜"],
+["tristeza","Conviertes mis lágrimas en sonrisas 💜"],
+["silencio","Tu voz llena mi alma 💜"],
+["vacío","Me completas 💜"],
+["frío","Tu amor me calienta 💜"],
+["perdido","Eres mi camino 💜"],
 
-  document.getElementById("music").play().catch(()=>{});
+["tu sonrisa","Tu sonrisa es mi lugar favorito 💜"],
+["tus ojos","Tus ojos... son mi universo 💜"],
+["tu risa","Tu risa es la música más hermosa 💜"],
+["tu voz","Podría escucharte para siempre 💜"],
+["tu cabello","Tu cabello baila como mis pensamientos 💜"],
+["tu forma","Eres arte en cada detalle 💜"],
 
-  startGame();
-},3000);
+["nuestros recuerdos","Quiero más momentos contigo 💜"],
+["nuestro futuro","Quiero construirlo contigo 💜"],
+["nuestros viajes","Descubrir el mundo contigo 💜"],
 
-/* THOUGHTS */
-let darkWords=["miedo","dudas","soledad","silencio"];
-let goodWords=["Ryoko 💜","su sonrisa","su voz"];
+["amor","Eres mi definición de amor 💜"],
+["vida","Eres mi razón 💜"],
+["destino","Te elegiría en todas las vidas 💜"],
+["alma","Siento que nuestras almas se conocen 💜"],
 
-let cleared=0;
+["noche","Incluso la noche brilla contigo 💜"],
+["luz","Eres mi luz 💜"],
+["sueños","Eres mi sueño real 💜"],
 
-function spawn(text,type){
-  let t=document.createElement("div");
-  t.className="thought "+type;
-  t.innerText=text;
+["abrazo","Quiero perderme en tus brazos 💜"],
+["beso","Cada beso tuyo es magia 💜"],
+["cerca","Solo quiero estar cerca de ti 💜"],
 
-  t.style.left=Math.random()*90+"%";
-  t.style.top=Math.random()*70+"%";
+["calma","Traes paz a mi mente 💜"],
+["locura","Eres mi locura favorita 💜"],
+["todo","Eres todo para mí 💜"]
+];
 
-  t.onclick=()=>{
-    if(type==="dark"){
-      explode(t);
-      t.remove();
-      cleared++;
+/* create thoughts */
+thoughts.forEach(t=>{
+  let el=document.createElement("div");
+  el.className="thought";
+  el.innerText=t[0];
+  el.style.left=Math.random()*90+"vw";
+  el.style.top=Math.random()*80+"vh";
 
-      if(cleared>=darkWords.length){
-        ending();
-      }
-    }
-  };
+  el.onclick=()=>{
+    el.classList.add("activated");
+    showMsg(t[1]);
+    checkEnd();
+  }
 
-  document.body.appendChild(t);
+  document.body.appendChild(el);
+});
+
+function showMsg(text){
+  let m=document.getElementById("msg");
+  m.innerText=text;
+  m.style.opacity=1;
+  setTimeout(()=>m.style.opacity=0,3000);
 }
 
-/* PARTICLE EXPLOSION */
-function explode(el){
-  for(let i=0;i<10;i++){
-    let p=document.createElement("div");
-    p.className="particle";
-    p.innerHTML="💜";
-    p.style.left=el.offsetLeft+"px";
-    p.style.top=el.offsetTop+"px";
-    document.body.appendChild(p);
-    setTimeout(()=>p.remove(),4000);
+/* COUNT */
+let activated=0;
+function checkEnd(){
+  activated++;
+  if(activated>15){
+    startEnding();
   }
 }
 
-/* SPAWN ALL */
-function startGame(){
-  goodWords.forEach(w=>spawn(w,"good"));
-  darkWords.forEach(w=>spawn(w,"dark"));
-
-  // voice
-  setTimeout(()=>{
-    let msg=new SpeechSynthesisUtterance("Ryoko...");
-    msg.lang="es-ES";
-    speechSynthesis.speak(msg);
-  },2000);
-}
-
-/* MOVE */
-document.addEventListener("mousemove",(e)=>move(e.clientX));
-document.addEventListener("touchmove",(e)=>move(e.touches[0].clientX));
-
-function move(x){
-  let p=document.getElementById("player");
-  p.style.left=x+"px";
-  p.classList.add("walk");
-  setTimeout(()=>p.classList.remove("walk"),200);
-}
-
 /* ENDING */
-function ending(){
+function startEnding(){
+  document.getElementById("music").play();
+
+  let a=document.getElementById("ahmad");
+  let r=document.getElementById("ryoko");
+
+  a.style.left="45%";
+  r.style.right="45%";
+
   setTimeout(()=>{
-    let f=document.getElementById("final");
-    let txt=document.getElementById("finalText");
+    showFinal();
+    createParticles();
+    if(navigator.vibrate) navigator.vibrate(200);
+  },3000);
+}
 
-    f.classList.add("show");
+function showFinal(){
+  let f=document.getElementById("final");
+  f.style.opacity=1;
 
-    txt.innerHTML=
-    "Ryoko... 💜<br><br>"+
-    "En medio de todo... te encontré.<br><br>"+
-    "<b>Tú haces que mi mente sea un lugar en paz.</b><br><br>"+
-    "Ahmad 🖤";
+  f.innerHTML=`
+  <h2>Ryoko 💜</h2>
+  <p>Tus ojos… son donde mi mundo encuentra calma.</p>
+  <p>Tu cabello… baila como mis pensamientos cuando pienso en ti.</p>
+  <p>Tu risa… es la melodía que quiero escuchar toda mi vida.</p>
+  <br>
+  <p><b>En medio de todo… te encontré.</b></p>
+  <p><b>Y contigo… mi mente es un lugar en paz.</b></p>
+  <br>
+  <h3>Ahmad 💋</h3>
+  `;
+}
 
-    // particles spell name
-    for(let i=0;i<40;i++){
-      let p=document.createElement("div");
-      p.className="particle";
-      p.innerHTML="Ryoko 💜";
-      p.style.left=Math.random()*100+"%";
-      p.style.top=Math.random()*100+"%";
-      document.body.appendChild(p);
-    }
-
-  },1500);
+/* PARTICLES */
+function createParticles(){
+  setInterval(()=>{
+    let p=document.createElement("div");
+    p.className="particle";
+    p.innerText="Ryoko 💜";
+    p.style.left=Math.random()*100+"vw";
+    p.style.top="100vh";
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),3000);
+  },200);
 }
 
 </script>
