@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ryoko 💜</title>
+
+<style>
+body{
+  margin:0;
+  overflow:hidden;
+  background:black;
+  font-family:sans-serif;
+  color:white;
+}
+
+/* SCREENS */
+.screen{
+  position:absolute;
+  inset:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+}
+.active{display:flex;}
+
+/* INTRO */
+.glitch{
+  font-size:26px;
+  animation:glitch 0.3s infinite;
+}
+@keyframes glitch{
+  0%{text-shadow:2px 2px purple;}
+  50%{text-shadow:-2px -2px pink;}
+  100%{text-shadow:2px -2px violet;}
+}
+
+/* WORLD */
+#world{
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle,#140822,#000);
+  overflow:hidden;
+}
+
+/* PLAYER */
+#player{
+  position:absolute;
+  bottom:60px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:40px;
+  transition:0.2s;
+}
+
+/* WALK */
+.walk{
+  animation:walk 0.5s infinite alternate;
+}
+@keyframes walk{
+  from{transform:translateX(-50%) translateY(0);}
+  to{transform:translateX(-50%) translateY(-5px);}
+}
+
+/* THOUGHTS */
+.thought{
+  position:absolute;
+  padding:10px;
+  border-radius:12px;
+  font-size:14px;
+  cursor:pointer;
+  transition:0.5s;
+}
+
+.good{
+  background:#ff66cc;
+  box-shadow:0 0 20px #ff66cc;
+}
+
+.dark{
+  background:#111;
+  color:#777;
+}
+
+/* PARTICLES */
+.particle{
+  position:absolute;
+  color:#ff66cc;
+  animation:float 4s linear forwards;
+}
+@keyframes float{
+  to{transform:translateY(-200px);opacity:0;}
+}
+
+/* FINAL */
+#final{
+  position:absolute;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  opacity:0;
+  transition:2s;
+}
+
+#final.show{opacity:1;}
+
+.card{
+  background:rgba(0,0,0,0.8);
+  padding:30px;
+  border-radius:20px;
+  box-shadow:0 0 30px purple;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- INTRO -->
+<div id="intro" class="screen active">
+  <h1 class="glitch">Accediendo a la mente de Ahmad... 💜</h1>
+</div>
+
+<!-- WORLD -->
+<div id="world" class="screen">
+  <div id="player">🧑‍🦱</div>
+</div>
+
+<!-- FINAL -->
+<div id="final">
+  <div class="card" id="finalText"></div>
+</div>
+
+<audio id="music" loop>
+  <source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3">
+</audio>
+
+<script>
+
+/* START */
+setTimeout(()=>{
+  document.getElementById("intro").classList.remove("active");
+  document.getElementById("world").classList.add("active");
+
+  document.getElementById("music").play().catch(()=>{});
+
+  startGame();
+},3000);
+
+/* THOUGHTS */
+let darkWords=["miedo","dudas","soledad","silencio"];
+let goodWords=["Ryoko 💜","su sonrisa","su voz"];
+
+let cleared=0;
+
+function spawn(text,type){
+  let t=document.createElement("div");
+  t.className="thought "+type;
+  t.innerText=text;
+
+  t.style.left=Math.random()*90+"%";
+  t.style.top=Math.random()*70+"%";
+
+  t.onclick=()=>{
+    if(type==="dark"){
+      explode(t);
+      t.remove();
+      cleared++;
+
+      if(cleared>=darkWords.length){
+        ending();
+      }
+    }
+  };
+
+  document.body.appendChild(t);
+}
+
+/* PARTICLE EXPLOSION */
+function explode(el){
+  for(let i=0;i<10;i++){
+    let p=document.createElement("div");
+    p.className="particle";
+    p.innerHTML="💜";
+    p.style.left=el.offsetLeft+"px";
+    p.style.top=el.offsetTop+"px";
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),4000);
+  }
+}
+
+/* SPAWN ALL */
+function startGame(){
+  goodWords.forEach(w=>spawn(w,"good"));
+  darkWords.forEach(w=>spawn(w,"dark"));
+
+  // voice
+  setTimeout(()=>{
+    let msg=new SpeechSynthesisUtterance("Ryoko...");
+    msg.lang="es-ES";
+    speechSynthesis.speak(msg);
+  },2000);
+}
+
+/* MOVE */
+document.addEventListener("mousemove",(e)=>move(e.clientX));
+document.addEventListener("touchmove",(e)=>move(e.touches[0].clientX));
+
+function move(x){
+  let p=document.getElementById("player");
+  p.style.left=x+"px";
+  p.classList.add("walk");
+  setTimeout(()=>p.classList.remove("walk"),200);
+}
+
+/* ENDING */
+function ending(){
+  setTimeout(()=>{
+    let f=document.getElementById("final");
+    let txt=document.getElementById("finalText");
+
+    f.classList.add("show");
+
+    txt.innerHTML=
+    "Ryoko... 💜<br><br>"+
+    "En medio de todo... te encontré.<br><br>"+
+    "<b>Tú haces que mi mente sea un lugar en paz.</b><br><br>"+
+    "Ahmad 🖤";
+
+    // particles spell name
+    for(let i=0;i<40;i++){
+      let p=document.createElement("div");
+      p.className="particle";
+      p.innerHTML="Ryoko 💜";
+      p.style.left=Math.random()*100+"%";
+      p.style.top=Math.random()*100+"%";
+      document.body.appendChild(p);
+    }
+
+  },1500);
+}
+
+</script>
+
+</body>
+</html>
