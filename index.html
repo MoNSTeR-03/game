@@ -9,7 +9,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      user-select: none; /* makes it feel more like a magical canvas */
+      user-select: none; /* makes it feel like a magical canvas */
     }
 
     body {
@@ -60,29 +60,33 @@
       transform: scale(0.98);
     }
 
-    /* message popup - delicate */
+    /* message popup - NOW STAYS LONGER (6 seconds) & larger readable */
     #msg {
       position: fixed;
-      bottom: 25%;
+      bottom: 28%;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(20px);
-      padding: 12px 28px;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(24px);
+      padding: 16px 32px;
       border-radius: 80px;
-      font-size: 1.2rem;
-      font-weight: 500;
+      font-size: 1.3rem;
+      font-weight: 600;
       color: #fff0fc;
       text-align: center;
       border: 1px solid #ffa6e0;
-      white-space: nowrap;
+      white-space: normal;
+      max-width: 85vw;
+      width: auto;
+      word-break: break-word;
       z-index: 200;
       font-family: 'Quicksand', monospace;
-      letter-spacing: 1px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      letter-spacing: 0.5px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
       transition: opacity 0.4s ease;
       opacity: 0;
       pointer-events: none;
+      line-height: 1.4;
     }
 
     /* characters (chibi style) */
@@ -113,11 +117,11 @@
       left: 50%;
       transform: translate(-50%, -50%);
       width: 85%;
-      max-width: 550px;
-      background: rgba(10, 0, 25, 0.85);
-      backdrop-filter: blur(18px);
+      max-width: 580px;
+      background: rgba(10, 0, 25, 0.92);
+      backdrop-filter: blur(20px);
       border-radius: 64px;
-      padding: 28px 20px;
+      padding: 32px 24px;
       text-align: center;
       border: 2px solid rgba(255, 100, 200, 0.7);
       box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 50px rgba(218, 112, 214, 0.3);
@@ -201,26 +205,56 @@
       100% { opacity: 1; transform: scale(1.4);}
     }
 
-    /* counter hidden but magic */
+    /* counter & instruction */
     .counter-info {
       position: fixed;
       bottom: 15px;
       left: 20px;
-      font-size: 12px;
-      color: #ff99dd;
-      background: rgba(0,0,0,0.4);
-      padding: 4px 12px;
+      font-size: 13px;
+      color: #ffccf0;
+      background: rgba(0,0,0,0.55);
+      padding: 6px 14px;
       border-radius: 50px;
       font-family: monospace;
       z-index: 50;
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(6px);
       pointer-events: none;
+      font-weight: 500;
+    }
+
+    /* instruction banner at start */
+    .instruction-banner {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(16px);
+      padding: 12px 24px;
+      border-radius: 60px;
+      color: #ffdcf5;
+      font-size: 1rem;
+      font-weight: bold;
+      border: 1px solid #ff99ee;
+      z-index: 150;
+      white-space: nowrap;
+      font-family: 'Quicksand', sans-serif;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      pointer-events: none;
+      animation: gentlePulse 2s infinite;
+    }
+
+    @keyframes gentlePulse {
+      0% { opacity: 0.8; box-shadow: 0 0 0 0 rgba(255, 100, 200, 0.4);}
+      100% { opacity: 1; box-shadow: 0 0 0 8px rgba(255, 100, 200, 0);}
     }
 
     @media (max-width: 600px) {
       .thought { font-size: 0.75rem; padding: 6px 14px; white-space: nowrap; }
       .char { font-size: 65px; bottom: 5%; }
-      #msg { font-size: 0.9rem; white-space: nowrap; bottom: 22%;}
+      #msg { font-size: 1rem; padding: 12px 20px; bottom: 25%; max-width: 90vw; white-space: normal;}
+      .instruction-banner { font-size: 0.75rem; padding: 8px 18px; white-space: nowrap; top: 12px;}
       #final p { font-size: 0.9rem;}
       #final h2 { font-size: 2.2rem; }
     }
@@ -229,7 +263,8 @@
 <body>
 
 <div id="msg"></div>
-<div class="counter-info" id="counterDisplay">✨ awakening memories ✨</div>
+<div class="counter-info" id="counterDisplay">✨ Ryoko, touch my thoughts ✨</div>
+<div class="instruction-banner" id="instructionMsg">💜 Ryoko, touch each floating thought → discover what hides inside my heart 💜</div>
 
 <div id="ahmad" class="char">🧸💫</div>
 <div id="ryoko" class="char">🌸🦋</div>
@@ -238,12 +273,10 @@
 
 <audio id="bgMusic" loop preload="auto">
   <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-  <!-- fallback if needed: soft piano instrumental, but we'll embed a gentle track that works cross-origin -->
 </audio>
 
 <script>
-  // ========== RYOKO'S MAGICAL UNIVERSE ========== 
-  // deeper, more intimate thoughts and messages that blend poetry & soul
+  // ========== DEEPER THOUGHTS + LONGER MESSAGE DISPLAY ==========
   const thoughtsList = [
     { word: "✨ tu luz ✨", message: "Ryoko, cuando sonríes, hasta la luna se queda en silencio para mirarte 💜" },
     { word: "🌙 tus ojos", message: "Tus ojos son galaxias donde quiero perderme cada noche. Dos lunas que guían mi alma." },
@@ -269,69 +302,70 @@
     { word: "💖 amor eterno", message: "Mi corazón ahora late en tu idioma. Ahmad & Ryoko 💜" },
     { word: "🌹 destino", message: "El destino nos escribió en las estrellas. Y yo lo firmo con mi alma." },
     { word: "🕊️ paz", message: "Tu presencia es mi templo, mi refugio, mi oración favorita." },
-    { word: "💋 abrazo", message: "Un abrazo tuyo vale más que mil palabras bonitas." },
-    { word: "🍬 pequeños momentos", message: "Ver tu cara al despertar... es mi milagro diario." }
+    { word: "💋 abrazo", message: "Un abrazo tuyo vale más que mil palabras bonitas. Quiero perderme en tus brazos." },
+    { word: "🍬 momentos", message: "Cada pequeño instante contigo es mi tesoro más valioso, Ryoko." }
   ];
 
   let activatedCount = 0;
   let endingTriggered = false;
-  let totalThoughts = thoughtsList.length;
-  const REQUIRED_CLICKS = 16;   // after 16 special memories, the grand surprise blooms
-
-  // store created thought elements
+  const REQUIRED_CLICKS = 16;   // unlock surprise after 16 heartfelt clicks
   let thoughtElements = [];
 
-  // helper: show message smoothly
+  // ========== MESSAGE WITH LONGER DURATION (6 seconds) ==========
+  let activeMsgTimeout = null;
   function showFloatingMessage(text) {
     const msgDiv = document.getElementById("msg");
+    // clear previous timeout to extend if new message appears
+    if (activeMsgTimeout) clearTimeout(activeMsgTimeout);
     msgDiv.innerText = text;
     msgDiv.style.opacity = "1";
-    setTimeout(() => {
+    // message stays for 6 seconds — enough to read comfortably
+    activeMsgTimeout = setTimeout(() => {
       if (msgDiv) msgDiv.style.opacity = "0";
-    }, 2800);
+      activeMsgTimeout = null;
+    }, 6000);
   }
 
-  // update counter aesthetic
+  // update counter UI with cute text
   function updateCounterUI() {
-    const remain = Math.max(0, REQUIRED_CLICKS - activatedCount);
     const counterDiv = document.getElementById("counterDisplay");
     if (activatedCount >= REQUIRED_CLICKS) {
-      counterDiv.innerHTML = "💜 el corazón está listo 💜";
-      counterDiv.style.color = "#ffbbf0";
+      counterDiv.innerHTML = "💜 Your love unlocked the secret 💜";
+      counterDiv.style.color = "#ffd966";
     } else {
-      counterDiv.innerHTML = `✨ desbloqueando recuerdos... ${activatedCount}/${REQUIRED_CLICKS} ✨`;
+      counterDiv.innerHTML = `✨ tapping my soul... ${activatedCount}/${REQUIRED_CLICKS} ✨`;
     }
   }
 
-  // create sparkle background effect (continuous soft glitter)
+  // create sparkle background (continuous soft glitter)
   function createSparkleField() {
-    for (let i = 0; i < 55; i++) {
+    for (let i = 0; i < 65; i++) {
       let star = document.createElement("div");
       star.classList.add("sparkle");
       star.style.left = Math.random() * 100 + "%";
       star.style.top = Math.random() * 100 + "%";
-      star.style.animationDuration = 0.8 + Math.random() * 1.5 + "s";
-      star.style.animationDelay = Math.random() * 3 + "s";
+      star.style.animationDuration = 0.8 + Math.random() * 1.8 + "s";
+      star.style.animationDelay = Math.random() * 4 + "s";
       document.body.appendChild(star);
     }
   }
   createSparkleField();
 
-  // floating particle effect (when a thought is clicked: extra love)
+  // mini heart burst at click position
   function burstMiniHearts(x, y) {
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 8; i++) {
       let heart = document.createElement("div");
-      heart.innerText = ["💜", "🌸", "✨", "🦋", "💫"][Math.floor(Math.random() * 5)];
+      heart.innerText = ["💜", "🌸", "✨", "🦋", "💫", "🌙"][Math.floor(Math.random() * 6)];
       heart.classList.add("particle");
-      heart.style.left = (x - 20 + Math.random() * 40) + "px";
-      heart.style.top = (y - 20 + Math.random() * 40) + "px";
-      heart.style.fontSize = "18px";
+      heart.style.left = (x - 25 + Math.random() * 50) + "px";
+      heart.style.top = (y - 25 + Math.random() * 50) + "px";
+      heart.style.fontSize = "20px";
       document.body.appendChild(heart);
-      setTimeout(() => heart.remove(), 2000);
+      setTimeout(() => heart.remove(), 2200);
     }
   }
 
-  // handle click on thought bubble
+  // Handle thought click
   function onThoughtClick(thoughtDiv, msgText, event) {
     if (endingTriggered) return;
     if (thoughtDiv.classList.contains("activated")) return;
@@ -341,20 +375,17 @@
     updateCounterUI();
     showFloatingMessage(msgText);
 
-    // burst at click position
     const rect = thoughtDiv.getBoundingClientRect();
     burstMiniHearts(rect.left + rect.width / 2, rect.top + rect.height / 2);
 
-    // gentle haptic if available
     if (navigator.vibrate) navigator.vibrate(50);
 
-    // check if we reached the threshold
     if (activatedCount >= REQUIRED_CLICKS && !endingTriggered) {
       startGrandFinale();
     }
   }
 
-  // generate thoughts dynamically all over screen with better placement
+  // generate all thoughts on screen avoiding overlap
   function generateThoughts() {
     const fragment = document.createDocumentFragment();
     const usedPositions = [];
@@ -363,20 +394,18 @@
       const thoughtDiv = document.createElement("div");
       thoughtDiv.className = "thought";
       thoughtDiv.innerText = item.word;
-      // avoid overlapping too much but random poetic layout
       let leftPos, topPos;
       let attempts = 0;
       do {
         leftPos = 5 + Math.random() * 85; // vw
         topPos = 8 + Math.random() * 75;  // vh
         attempts++;
-        if (attempts > 30) break;
-      } while (usedPositions.some(pos => Math.abs(pos.left - leftPos) < 12 && Math.abs(pos.top - topPos) < 10));
+        if (attempts > 40) break;
+      } while (usedPositions.some(pos => Math.abs(pos.left - leftPos) < 13 && Math.abs(pos.top - topPos) < 10));
       usedPositions.push({ left: leftPos, top: topPos });
       thoughtDiv.style.left = leftPos + "vw";
       thoughtDiv.style.top = topPos + "vh";
       
-      // store message
       const messageText = item.message;
       thoughtDiv.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -388,63 +417,56 @@
     document.body.appendChild(fragment);
   }
 
-  // BEGIN GRAND FINALE: moving characters, music, emotional explosion
+  // GRAND FINALE: romantic convergence
   function startGrandFinale() {
     if (endingTriggered) return;
     endingTriggered = true;
 
-    // remove unclicked thoughts to avoid distraction (gracefully)
+    // remove instruction banner with fade out
+    const instrBanner = document.getElementById("instructionMsg");
+    if (instrBanner) {
+      instrBanner.style.transition = "opacity 1s";
+      instrBanner.style.opacity = "0";
+      setTimeout(() => instrBanner.remove(), 1000);
+    }
+
+    // gently fade unclicked thoughts (they're not needed)
     thoughtElements.forEach(el => {
       if (!el.classList.contains("activated")) {
-        el.style.transition = "opacity 0.5s";
+        el.style.transition = "opacity 0.6s";
         el.style.opacity = "0";
-        setTimeout(() => el.remove(), 500);
+        setTimeout(() => el.remove(), 700);
       }
     });
 
-    // play music (royalty-free dreamy instrumental from reliable source)
+    // Play romantic music
     const audio = document.getElementById("bgMusic");
-    audio.volume = 0.5;
-    audio.play().catch(e => console.log("audio autoplay blocked, but still visual magic", e));
+    audio.volume = 0.45;
+    audio.play().catch(e => console.log("audio autoplay blocked", e));
     
-    // start moving characters to center
     const ahmadChar = document.getElementById("ahmad");
     const ryokoChar = document.getElementById("ryoko");
 
-    // Animate characters toward each other
     ahmadChar.style.transition = "all 2.2s cubic-bezier(0.2, 0.9, 0.4, 1.2)";
     ryokoChar.style.transition = "all 2.2s cubic-bezier(0.2, 0.9, 0.4, 1.2)";
-    ahmadChar.style.left = "40%";
-    ahmadChar.style.bottom = "20%";
-    ryokoChar.style.right = "40%";
-    ryokoChar.style.bottom = "20%";
+    ahmadChar.style.left = "42%";
+    ahmadChar.style.bottom = "22%";
+    ryokoChar.style.right = "42%";
+    ryokoChar.style.bottom = "22%";
 
-    // also add glowing rings around them
-    const ring = document.createElement("div");
-    ring.style.position = "absolute";
-    ring.style.left = "0";
-    ring.style.top = "0";
-    ring.style.pointerEvents = "none";
-    ring.style.zIndex = "12";
-    document.body.appendChild(ring);
-
-    // after characters meet halfway
+    // After characters move, show final love letter
     setTimeout(() => {
-      // final confession with extended poem
       showFinalLoveDeclaration();
-      // particle rain of "Ryoko 💜"
       createHeavyLoveRain();
-      // optional vibration pattern
       if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-    }, 2200);
+    }, 2300);
   }
 
   function showFinalLoveDeclaration() {
     const finalDiv = document.getElementById("final");
-    // detailed emotional letter to Ryoko
     finalDiv.innerHTML = `
       <h2>✨ Ryoko ✨</h2>
-      <p>No sabes cuánto brilla mi mundo desde que llegaste.</p>
+      <p>No sabes cuánto brilla mi mundo desde que llegaste a mi vida.</p>
       <div class="special-quote">
         💜 “Tus ojos no solo miran, sanan. Tu risa no solo suena, florece. <br>
         Cada latido tuyo se sincroniza con mi alma. <br>
@@ -457,23 +479,23 @@
       <strong>Te amo más de lo que las palabras pueden abrazar.</strong></p>
       <p style="font-size:1.2rem;">Eres mi sueño hecho realidad, Ryoko. 🌙💜</p>
       <h3>💕 Ahmad 💕</h3>
-      <p style="font-size:0.8rem; opacity:0.8;">✦ cada pensamiento tuyo vive en mi corazón ✦</p>
+      <p style="font-size:0.8rem; opacity:0.9;">✦ cada pensamiento tuyo vive en mi corazón para siempre ✦</p>
     `;
     finalDiv.style.opacity = "1";
-    finalDiv.style.pointerEvents = "auto";  // let her read & smile
+    finalDiv.style.pointerEvents = "auto";
 
-    // add extra sparkle explosion after showing message
-    for (let i = 0; i < 40; i++) {
+    // Extra sparkle explosion around final message
+    for (let i = 0; i < 55; i++) {
       setTimeout(() => {
-        const extraSpark = document.createElement("div");
-        extraSpark.innerText = "💜";
-        extraSpark.classList.add("particle");
-        extraSpark.style.left = Math.random() * 100 + "%";
-        extraSpark.style.top = Math.random() * 80 + "%";
-        extraSpark.style.fontSize = "26px";
-        document.body.appendChild(extraSpark);
-        setTimeout(() => extraSpark.remove(), 2800);
-      }, i * 70);
+        const spark = document.createElement("div");
+        spark.innerText = "💜";
+        spark.classList.add("particle");
+        spark.style.left = Math.random() * 100 + "%";
+        spark.style.top = Math.random() * 80 + "%";
+        spark.style.fontSize = "28px";
+        document.body.appendChild(spark);
+        setTimeout(() => spark.remove(), 2800);
+      }, i * 60);
     }
   }
 
@@ -481,28 +503,27 @@
     let rainInterval = setInterval(() => {
       if (!endingTriggered) return;
       const particle = document.createElement("div");
-      const icons = ["💜", "🌸", "✨", "🦋", "🌙", "⭐", "💗", "🎀"];
+      const icons = ["💜", "🌸", "✨", "🦋", "🌙", "⭐", "💗", "🎀", "💖"];
       particle.innerText = icons[Math.floor(Math.random() * icons.length)];
       particle.classList.add("particle");
       particle.style.left = Math.random() * 100 + "%";
       particle.style.top = "-20px";
-      particle.style.fontSize = "22px";
-      particle.style.animationDuration = "2.5s";
+      particle.style.fontSize = "24px";
+      particle.style.animationDuration = "2.8s";
       document.body.appendChild(particle);
-      setTimeout(() => particle.remove(), 2800);
-    }, 400);
-    
-    // stop rain after 12 seconds but keep magic subtle
-    setTimeout(() => clearInterval(rainInterval), 13000);
+      setTimeout(() => particle.remove(), 3000);
+    }, 380);
+    setTimeout(() => clearInterval(rainInterval), 14000);
   }
 
-  // also, floating background messages: after final appears, additional sweet whispers
-  function addWhisperingMessages() {
+  // Whispering romantic messages after finale appears (optional)
+  function addPostFinaleWhispers() {
     const whispers = [
       "Ryoko, eres mi poesía favorita.",
       "Cada estrella me recuerda a ti.",
       "Tus abrazos son mi lugar seguro.",
-      "Mi mundo tiene sentido gracias a ti."
+      "Mi mundo tiene sentido gracias a ti.",
+      "Te llevo conmigo donde vaya."
     ];
     let idx = 0;
     const whisperInterval = setInterval(() => {
@@ -516,59 +537,72 @@
       whisperDiv.style.bottom = "12%";
       whisperDiv.style.left = "50%";
       whisperDiv.style.transform = "translateX(-50%)";
-      whisperDiv.style.backgroundColor = "rgba(0,0,0,0.5)";
-      whisperDiv.style.backdropFilter = "blur(10px)";
-      whisperDiv.style.padding = "6px 18px";
-      whisperDiv.style.borderRadius = "40px";
-      whisperDiv.style.color = "#fbc4ff";
+      whisperDiv.style.backgroundColor = "rgba(0,0,0,0.6)";
+      whisperDiv.style.backdropFilter = "blur(12px)";
+      whisperDiv.style.padding = "8px 22px";
+      whisperDiv.style.borderRadius = "50px";
+      whisperDiv.style.color = "#ffdcf5";
       whisperDiv.style.fontSize = "14px";
       whisperDiv.style.zIndex = "250";
       whisperDiv.style.whiteSpace = "nowrap";
       whisperDiv.style.fontFamily = "monospace";
       whisperDiv.style.opacity = "0";
-      whisperDiv.style.transition = "opacity 0.8s";
+      whisperDiv.style.transition = "opacity 0.6s";
       document.body.appendChild(whisperDiv);
-      setTimeout(() => { whisperDiv.style.opacity = "1"; }, 10);
+      setTimeout(() => { whisperDiv.style.opacity = "1"; }, 20);
       setTimeout(() => {
         whisperDiv.style.opacity = "0";
-        setTimeout(() => whisperDiv.remove(), 1000);
-      }, 3000);
+        setTimeout(() => whisperDiv.remove(), 800);
+      }, 3800);
       idx++;
-    }, 5000);
-    setTimeout(() => clearInterval(whisperInterval), 30000);
+    }, 5200);
+    setTimeout(() => clearInterval(whisperInterval), 32000);
   }
 
-  // add a gentle initial vibe: ryoko and ahmad have little floating note
+  // initial star dust for ambiance
   function initialStarDust() {
-    for (let i=0;i<30;i++) {
+    for (let i = 0; i < 45; i++) {
       let dust = document.createElement("div");
       dust.innerText = "✦";
       dust.style.position = "absolute";
       dust.style.left = Math.random() * 100 + "%";
       dust.style.top = Math.random() * 100 + "%";
       dust.style.color = "#ffb3f0";
-      dust.style.fontSize = "10px";
+      dust.style.fontSize = "9px";
       dust.style.opacity = "0.3";
       dust.style.pointerEvents = "none";
       document.body.appendChild(dust);
     }
   }
 
-  // when page fully loads
+  // hide instruction banner after 8 seconds but also keep as reminder - but we'll let it fade naturally on first click maybe? Better: keep visible until first click? we'll keep it but user sees.
+  function fadeInstructionAfterDelay() {
+    setTimeout(() => {
+      const instr = document.getElementById("instructionMsg");
+      if (instr && !endingTriggered) {
+        instr.style.transition = "opacity 1.5s";
+        instr.style.opacity = "0.6";
+        // but not remove completely, because she might need reminder
+      }
+    }, 7000);
+  }
+
+  // Load event
   window.addEventListener("load", () => {
     generateThoughts();
     initialStarDust();
     updateCounterUI();
-    // small delay: subtle message to start
+    fadeInstructionAfterDelay();
+    // welcome message with longer duration to greet Ryoko
     setTimeout(() => {
       if (!endingTriggered) {
-        showFloatingMessage("💜 toca los recuerdos... descubre lo que siento por ti, Ryoko 💜");
+        showFloatingMessage("💜 Hola Ryoko... toca cada burbuja, descubrirás lo que siento por ti 💜");
       }
-    }, 1000);
-    addWhisperingMessages(); // will only trigger whispers after finale, but anyway check inside
+    }, 800);
+    addPostFinaleWhispers(); // will only become active after finale but it's fine
   });
 
-  // optional retry for music autoplay on user first click anywhere
+  // enable music on first interaction
   function enableMusicOnFirstTouch() {
     const audioEl = document.getElementById("bgMusic");
     if (audioEl.paused && !endingTriggered) {
