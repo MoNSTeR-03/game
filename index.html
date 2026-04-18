@@ -1,220 +1,584 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dentro de mi mente 💜</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Ryoko • The Universe Within You ✨</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none; /* makes it feel more like a magical canvas */
+    }
 
-<style>
-body{
-  margin:0;
-  overflow:hidden;
-  background: radial-gradient(circle at center, #0a0015, #000);
-  font-family: Arial, sans-serif;
-}
+    body {
+      min-height: 100vh;
+      background: radial-gradient(ellipse at 30% 40%, #0b0118, #000000);
+      overflow: hidden;
+      font-family: 'Segoe UI', 'Poppins', 'Quicksand', system-ui, -apple-system, 'Pacifico', cursive;
+      touch-action: manipulation;
+      position: relative;
+    }
 
-/* thoughts */
-.thought{
-  position:absolute;
-  padding:10px 15px;
-  background:#ff4fd8;
-  color:white;
-  border-radius:20px;
-  font-size:14px;
-  cursor:pointer;
-  box-shadow:0 0 15px #ff4fd8;
-  transition:0.3s;
-}
-.thought:hover{transform:scale(1.1);}
+    /* Floating thought bubbles — dreamlike */
+    .thought {
+      position: absolute;
+      background: rgba(255, 220, 250, 0.2);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 100, 200, 0.6);
+      border-radius: 60px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #ffe0f5;
+      text-shadow: 0 0 6px #ff44cc;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      letter-spacing: 0.5px;
+      font-family: 'Quicksand', sans-serif;
+      z-index: 20;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      white-space: nowrap;
+    }
 
-.activated{
-  background:#a64dff;
-  box-shadow:0 0 25px #a64dff;
-}
+    .thought:hover {
+      transform: scale(1.08);
+      background: rgba(255, 120, 210, 0.5);
+      border-color: #ff99ee;
+      box-shadow: 0 0 20px #ff66cc;
+    }
 
-/* message */
-#msg{
-  position:absolute;
-  bottom:20px;
-  width:100%;
-  text-align:center;
-  color:#fff;
-  font-size:18px;
-  opacity:0;
-  transition:0.5s;
-}
+    .thought.activated {
+      background: #c084fc;
+      border-color: #f0abfc;
+      box-shadow: 0 0 28px #d946ef;
+      color: white;
+      text-decoration: line-through;
+      opacity: 0.7;
+      cursor: default;
+      transform: scale(0.98);
+    }
 
-/* characters */
-.char{
-  position:absolute;
-  bottom:50px;
-  font-size:50px;
-  transition:3s;
-}
-#ahmad{left:10%;}
-#ryoko{right:10%;}
+    /* message popup - delicate */
+    #msg {
+      position: fixed;
+      bottom: 25%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(20px);
+      padding: 12px 28px;
+      border-radius: 80px;
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: #fff0fc;
+      text-align: center;
+      border: 1px solid #ffa6e0;
+      white-space: nowrap;
+      z-index: 200;
+      font-family: 'Quicksand', monospace;
+      letter-spacing: 1px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+      transition: opacity 0.4s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
 
-/* final */
-#final{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  color:#fff;
-  text-align:center;
-  opacity:0;
-}
+    /* characters (chibi style) */
+    .char {
+      position: absolute;
+      bottom: 8%;
+      font-size: 85px;
+      transition: all 2.2s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+      filter: drop-shadow(0 0 12px #ffa3d7);
+      z-index: 15;
+      text-shadow: 0 0 8px #ff66bb;
+    }
 
-/* particles */
-.particle{
-  position:absolute;
-  color:#ff4fd8;
-  font-size:20px;
-  animation:float 3s linear infinite;
-}
-@keyframes float{
-  from{transform:translateY(0);opacity:1;}
-  to{transform:translateY(-100px);opacity:0;}
-}
-</style>
+    #ahmad {
+      left: 8%;
+      transform: scale(1);
+    }
+
+    #ryoko {
+      right: 8%;
+      transform: scale(1);
+    }
+
+    /* final confession zone */
+    #final {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 85%;
+      max-width: 550px;
+      background: rgba(10, 0, 25, 0.85);
+      backdrop-filter: blur(18px);
+      border-radius: 64px;
+      padding: 28px 20px;
+      text-align: center;
+      border: 2px solid rgba(255, 100, 200, 0.7);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 50px rgba(218, 112, 214, 0.3);
+      opacity: 0;
+      transition: opacity 1.2s ease;
+      z-index: 300;
+      pointer-events: none;
+      color: #fff5fd;
+      font-family: 'Quicksand', 'Segoe UI', sans-serif;
+    }
+
+    #final h2 {
+      font-size: 3rem;
+      background: linear-gradient(135deg, #ffb3f0, #e08eff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+    }
+
+    #final p {
+      font-size: 1.1rem;
+      line-height: 1.5;
+      margin: 12px 0;
+      font-weight: 400;
+    }
+
+    #final .special-quote {
+      font-style: italic;
+      border-top: 1px dashed #ff9ef5;
+      border-bottom: 1px dashed #ff9ef5;
+      padding: 12px;
+      margin: 15px 0;
+      font-size: 1rem;
+    }
+
+    #final h3 {
+      margin-top: 18px;
+      font-size: 1.7rem;
+      font-weight: 600;
+      color: #ffccf0;
+    }
+
+    /* floating particles with heart */
+    .particle {
+      position: absolute;
+      font-size: 1.4rem;
+      pointer-events: none;
+      animation: floatUp 3.5s ease-out forwards;
+      z-index: 100;
+      filter: drop-shadow(0 0 4px #ff88dd);
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(0.6);
+        opacity: 0.9;
+      }
+      100% {
+        transform: translateY(-180px) scale(1.3);
+        opacity: 0;
+      }
+    }
+
+    /* sparkle effect */
+    .sparkle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: #ffb7f0;
+      border-radius: 50%;
+      box-shadow: 0 0 12px #ff44dd;
+      animation: twinkle 1.2s infinite alternate;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    @keyframes twinkle {
+      0% { opacity: 0.2; transform: scale(0.8);}
+      100% { opacity: 1; transform: scale(1.4);}
+    }
+
+    /* counter hidden but magic */
+    .counter-info {
+      position: fixed;
+      bottom: 15px;
+      left: 20px;
+      font-size: 12px;
+      color: #ff99dd;
+      background: rgba(0,0,0,0.4);
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-family: monospace;
+      z-index: 50;
+      backdrop-filter: blur(4px);
+      pointer-events: none;
+    }
+
+    @media (max-width: 600px) {
+      .thought { font-size: 0.75rem; padding: 6px 14px; white-space: nowrap; }
+      .char { font-size: 65px; bottom: 5%; }
+      #msg { font-size: 0.9rem; white-space: nowrap; bottom: 22%;}
+      #final p { font-size: 0.9rem;}
+      #final h2 { font-size: 2.2rem; }
+    }
+  </style>
 </head>
-
 <body>
 
 <div id="msg"></div>
+<div class="counter-info" id="counterDisplay">✨ awakening memories ✨</div>
 
-<div id="ahmad" class="char">🧑‍🦱</div>
-<div id="ryoko" class="char">👩</div>
+<div id="ahmad" class="char">🧸💫</div>
+<div id="ryoko" class="char">🌸🦋</div>
 
 <div id="final"></div>
 
-<audio id="music" src="https://www.bensound.com/bensound-music/bensound-love.mp3"></audio>
+<audio id="bgMusic" loop preload="auto">
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+  <!-- fallback if needed: soft piano instrumental, but we'll embed a gentle track that works cross-origin -->
+</audio>
 
 <script>
+  // ========== RYOKO'S MAGICAL UNIVERSE ========== 
+  // deeper, more intimate thoughts and messages that blend poetry & soul
+  const thoughtsList = [
+    { word: "✨ tu luz ✨", message: "Ryoko, cuando sonríes, hasta la luna se queda en silencio para mirarte 💜" },
+    { word: "🌙 tus ojos", message: "Tus ojos son galaxias donde quiero perderme cada noche. Dos lunas que guían mi alma." },
+    { word: "🌸 tu risa", message: "Tu risa es el sonido más puro, me hace flotar entre nubes de algodón 🌸💜" },
+    { word: "💜 tu alma", message: "Siento que te he conocido en mil vidas, y en cada una te elijo de nuevo." },
+    { word: "🍃 tu cabello", message: "Cuando el viento acaricia tu cabello, el universo escribe poesía." },
+    { word: "⭐ tu voz", message: "Tu voz me sana, me calma, es mi melodía favorita, Ryoko." },
+    { word: "🌊 miedo", message: "Antes temía al vacío... luego llegaste tú y lo llenaste de color." },
+    { word: "🕯️ soledad", message: "Contigo aprendí que la soledad era solo el eco esperando tu nombre." },
+    { word: "💭 dudas", message: "Cada duda desaparece cuando veo tu cara. Eres mi certeza más hermosa." },
+    { word: "🌌 oscuridad", message: "En mis noches más oscuras, tus recuerdos son estrellas fugaces." },
+    { word: "🫂 cansancio", message: "Un solo abrazo tuyo y el cansancio se vuelve brisa." },
+    { word: "🌧️ tristeza", message: "Tú transformas mi lluvia en arcoíris. Eres magia, Ryoko." },
+    { word: "💌 silencio", message: "Tu silencio también es poesía, porque sé que late por mí." },
+    { word: "💎 vacío", message: "Antes había un hueco, ahora solo hay 'Ryoko' escrito en cada rincón." },
+    { word: "❄️ frío", message: "Tu amor es el fuego que nunca se apaga, me abriga desde adentro." },
+    { word: "🧭 perdido", message: "Eres mi brújula en este caos, gracias por encontrarme." },
+    { word: "🦋 tu sonrisa", message: "Tu sonrisa merece un lugar en el museo de las cosas eternas." },
+    { word: "💜 tus manos", message: "Tus manos sostienen mi mundo sin saberlo." },
+    { word: "📖 nuestros días", message: "Cada día a tu lado es un capítulo que nunca quiero terminar." },
+    { word: "🏡 futuro", message: "Contigo quiero construir un hogar lleno de risas y tardes lentas." },
+    { word: "✈️ viajes", message: "Quiero ver cada atardecer del mundo, pero solo si estás a mi lado." },
+    { word: "💖 amor eterno", message: "Mi corazón ahora late en tu idioma. Ahmad & Ryoko 💜" },
+    { word: "🌹 destino", message: "El destino nos escribió en las estrellas. Y yo lo firmo con mi alma." },
+    { word: "🕊️ paz", message: "Tu presencia es mi templo, mi refugio, mi oración favorita." },
+    { word: "💋 abrazo", message: "Un abrazo tuyo vale más que mil palabras bonitas." },
+    { word: "🍬 pequeños momentos", message: "Ver tu cara al despertar... es mi milagro diario." }
+  ];
 
-/* THOUGHTS + MESSAGES */
-const thoughts = [
-["miedo","Me hiciste fuerte para enfrentar mis miedos 💜"],
-["soledad","Contigo nunca me siento solo 💜"],
-["dudas","Eres mi certeza 💜"],
-["oscuridad","Trajiste luz a mi mundo 💜"],
-["cansancio","Eres mi descanso 💜"],
-["tristeza","Conviertes mis lágrimas en sonrisas 💜"],
-["silencio","Tu voz llena mi alma 💜"],
-["vacío","Me completas 💜"],
-["frío","Tu amor me calienta 💜"],
-["perdido","Eres mi camino 💜"],
+  let activatedCount = 0;
+  let endingTriggered = false;
+  let totalThoughts = thoughtsList.length;
+  const REQUIRED_CLICKS = 16;   // after 16 special memories, the grand surprise blooms
 
-["tu sonrisa","Tu sonrisa es mi lugar favorito 💜"],
-["tus ojos","Tus ojos... son mi universo 💜"],
-["tu risa","Tu risa es la música más hermosa 💜"],
-["tu voz","Podría escucharte para siempre 💜"],
-["tu cabello","Tu cabello baila como mis pensamientos 💜"],
-["tu forma","Eres arte en cada detalle 💜"],
+  // store created thought elements
+  let thoughtElements = [];
 
-["nuestros recuerdos","Quiero más momentos contigo 💜"],
-["nuestro futuro","Quiero construirlo contigo 💜"],
-["nuestros viajes","Descubrir el mundo contigo 💜"],
-
-["amor","Eres mi definición de amor 💜"],
-["vida","Eres mi razón 💜"],
-["destino","Te elegiría en todas las vidas 💜"],
-["alma","Siento que nuestras almas se conocen 💜"],
-
-["noche","Incluso la noche brilla contigo 💜"],
-["luz","Eres mi luz 💜"],
-["sueños","Eres mi sueño real 💜"],
-
-["abrazo","Quiero perderme en tus brazos 💜"],
-["beso","Cada beso tuyo es magia 💜"],
-["cerca","Solo quiero estar cerca de ti 💜"],
-
-["calma","Traes paz a mi mente 💜"],
-["locura","Eres mi locura favorita 💜"],
-["todo","Eres todo para mí 💜"]
-];
-
-/* create thoughts */
-thoughts.forEach(t=>{
-  let el=document.createElement("div");
-  el.className="thought";
-  el.innerText=t[0];
-  el.style.left=Math.random()*90+"vw";
-  el.style.top=Math.random()*80+"vh";
-
-  el.onclick=()=>{
-    el.classList.add("activated");
-    showMsg(t[1]);
-    checkEnd();
+  // helper: show message smoothly
+  function showFloatingMessage(text) {
+    const msgDiv = document.getElementById("msg");
+    msgDiv.innerText = text;
+    msgDiv.style.opacity = "1";
+    setTimeout(() => {
+      if (msgDiv) msgDiv.style.opacity = "0";
+    }, 2800);
   }
 
-  document.body.appendChild(el);
-});
-
-function showMsg(text){
-  let m=document.getElementById("msg");
-  m.innerText=text;
-  m.style.opacity=1;
-  setTimeout(()=>m.style.opacity=0,3000);
-}
-
-/* COUNT */
-let activated=0;
-function checkEnd(){
-  activated++;
-  if(activated>15){
-    startEnding();
+  // update counter aesthetic
+  function updateCounterUI() {
+    const remain = Math.max(0, REQUIRED_CLICKS - activatedCount);
+    const counterDiv = document.getElementById("counterDisplay");
+    if (activatedCount >= REQUIRED_CLICKS) {
+      counterDiv.innerHTML = "💜 el corazón está listo 💜";
+      counterDiv.style.color = "#ffbbf0";
+    } else {
+      counterDiv.innerHTML = `✨ desbloqueando recuerdos... ${activatedCount}/${REQUIRED_CLICKS} ✨`;
+    }
   }
-}
 
-/* ENDING */
-function startEnding(){
-  document.getElementById("music").play();
+  // create sparkle background effect (continuous soft glitter)
+  function createSparkleField() {
+    for (let i = 0; i < 55; i++) {
+      let star = document.createElement("div");
+      star.classList.add("sparkle");
+      star.style.left = Math.random() * 100 + "%";
+      star.style.top = Math.random() * 100 + "%";
+      star.style.animationDuration = 0.8 + Math.random() * 1.5 + "s";
+      star.style.animationDelay = Math.random() * 3 + "s";
+      document.body.appendChild(star);
+    }
+  }
+  createSparkleField();
 
-  let a=document.getElementById("ahmad");
-  let r=document.getElementById("ryoko");
+  // floating particle effect (when a thought is clicked: extra love)
+  function burstMiniHearts(x, y) {
+    for (let i = 0; i < 6; i++) {
+      let heart = document.createElement("div");
+      heart.innerText = ["💜", "🌸", "✨", "🦋", "💫"][Math.floor(Math.random() * 5)];
+      heart.classList.add("particle");
+      heart.style.left = (x - 20 + Math.random() * 40) + "px";
+      heart.style.top = (y - 20 + Math.random() * 40) + "px";
+      heart.style.fontSize = "18px";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 2000);
+    }
+  }
 
-  a.style.left="45%";
-  r.style.right="45%";
+  // handle click on thought bubble
+  function onThoughtClick(thoughtDiv, msgText, event) {
+    if (endingTriggered) return;
+    if (thoughtDiv.classList.contains("activated")) return;
 
-  setTimeout(()=>{
-    showFinal();
-    createParticles();
-    if(navigator.vibrate) navigator.vibrate(200);
-  },3000);
-}
+    thoughtDiv.classList.add("activated");
+    activatedCount++;
+    updateCounterUI();
+    showFloatingMessage(msgText);
 
-function showFinal(){
-  let f=document.getElementById("final");
-  f.style.opacity=1;
+    // burst at click position
+    const rect = thoughtDiv.getBoundingClientRect();
+    burstMiniHearts(rect.left + rect.width / 2, rect.top + rect.height / 2);
 
-  f.innerHTML=`
-  <h2>Ryoko 💜</h2>
-  <p>Tus ojos… son donde mi mundo encuentra calma.</p>
-  <p>Tu cabello… baila como mis pensamientos cuando pienso en ti.</p>
-  <p>Tu risa… es la melodía que quiero escuchar toda mi vida.</p>
-  <br>
-  <p><b>En medio de todo… te encontré.</b></p>
-  <p><b>Y contigo… mi mente es un lugar en paz.</b></p>
-  <br>
-  <h3>Ahmad 💋</h3>
-  `;
-}
+    // gentle haptic if available
+    if (navigator.vibrate) navigator.vibrate(50);
 
-/* PARTICLES */
-function createParticles(){
-  setInterval(()=>{
-    let p=document.createElement("div");
-    p.className="particle";
-    p.innerText="Ryoko 💜";
-    p.style.left=Math.random()*100+"vw";
-    p.style.top="100vh";
-    document.body.appendChild(p);
-    setTimeout(()=>p.remove(),3000);
-  },200);
-}
+    // check if we reached the threshold
+    if (activatedCount >= REQUIRED_CLICKS && !endingTriggered) {
+      startGrandFinale();
+    }
+  }
 
+  // generate thoughts dynamically all over screen with better placement
+  function generateThoughts() {
+    const fragment = document.createDocumentFragment();
+    const usedPositions = [];
+
+    thoughtsList.forEach((item, idx) => {
+      const thoughtDiv = document.createElement("div");
+      thoughtDiv.className = "thought";
+      thoughtDiv.innerText = item.word;
+      // avoid overlapping too much but random poetic layout
+      let leftPos, topPos;
+      let attempts = 0;
+      do {
+        leftPos = 5 + Math.random() * 85; // vw
+        topPos = 8 + Math.random() * 75;  // vh
+        attempts++;
+        if (attempts > 30) break;
+      } while (usedPositions.some(pos => Math.abs(pos.left - leftPos) < 12 && Math.abs(pos.top - topPos) < 10));
+      usedPositions.push({ left: leftPos, top: topPos });
+      thoughtDiv.style.left = leftPos + "vw";
+      thoughtDiv.style.top = topPos + "vh";
+      
+      // store message
+      const messageText = item.message;
+      thoughtDiv.addEventListener("click", (e) => {
+        e.stopPropagation();
+        onThoughtClick(thoughtDiv, messageText, e);
+      });
+      fragment.appendChild(thoughtDiv);
+      thoughtElements.push(thoughtDiv);
+    });
+    document.body.appendChild(fragment);
+  }
+
+  // BEGIN GRAND FINALE: moving characters, music, emotional explosion
+  function startGrandFinale() {
+    if (endingTriggered) return;
+    endingTriggered = true;
+
+    // remove unclicked thoughts to avoid distraction (gracefully)
+    thoughtElements.forEach(el => {
+      if (!el.classList.contains("activated")) {
+        el.style.transition = "opacity 0.5s";
+        el.style.opacity = "0";
+        setTimeout(() => el.remove(), 500);
+      }
+    });
+
+    // play music (royalty-free dreamy instrumental from reliable source)
+    const audio = document.getElementById("bgMusic");
+    audio.volume = 0.5;
+    audio.play().catch(e => console.log("audio autoplay blocked, but still visual magic", e));
+    
+    // start moving characters to center
+    const ahmadChar = document.getElementById("ahmad");
+    const ryokoChar = document.getElementById("ryoko");
+
+    // Animate characters toward each other
+    ahmadChar.style.transition = "all 2.2s cubic-bezier(0.2, 0.9, 0.4, 1.2)";
+    ryokoChar.style.transition = "all 2.2s cubic-bezier(0.2, 0.9, 0.4, 1.2)";
+    ahmadChar.style.left = "40%";
+    ahmadChar.style.bottom = "20%";
+    ryokoChar.style.right = "40%";
+    ryokoChar.style.bottom = "20%";
+
+    // also add glowing rings around them
+    const ring = document.createElement("div");
+    ring.style.position = "absolute";
+    ring.style.left = "0";
+    ring.style.top = "0";
+    ring.style.pointerEvents = "none";
+    ring.style.zIndex = "12";
+    document.body.appendChild(ring);
+
+    // after characters meet halfway
+    setTimeout(() => {
+      // final confession with extended poem
+      showFinalLoveDeclaration();
+      // particle rain of "Ryoko 💜"
+      createHeavyLoveRain();
+      // optional vibration pattern
+      if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    }, 2200);
+  }
+
+  function showFinalLoveDeclaration() {
+    const finalDiv = document.getElementById("final");
+    // detailed emotional letter to Ryoko
+    finalDiv.innerHTML = `
+      <h2>✨ Ryoko ✨</h2>
+      <p>No sabes cuánto brilla mi mundo desde que llegaste.</p>
+      <div class="special-quote">
+        💜 “Tus ojos no solo miran, sanan. Tu risa no solo suena, florece. <br>
+        Cada latido tuyo se sincroniza con mi alma. <br>
+        Eres la protagonista de mis días, la musa de mis silencios.”
+      </div>
+      <p>Cuando veo tu cabello moverse con el viento,<br>
+      cuando descubro un nuevo brillo en tu mirada,<br>
+      sé que el universo conspiró para regalarme a su mejor creación.</p>
+      <p>Gracias por ser mi calma, mi aventura, mi destino favorito.<br>
+      <strong>Te amo más de lo que las palabras pueden abrazar.</strong></p>
+      <p style="font-size:1.2rem;">Eres mi sueño hecho realidad, Ryoko. 🌙💜</p>
+      <h3>💕 Ahmad 💕</h3>
+      <p style="font-size:0.8rem; opacity:0.8;">✦ cada pensamiento tuyo vive en mi corazón ✦</p>
+    `;
+    finalDiv.style.opacity = "1";
+    finalDiv.style.pointerEvents = "auto";  // let her read & smile
+
+    // add extra sparkle explosion after showing message
+    for (let i = 0; i < 40; i++) {
+      setTimeout(() => {
+        const extraSpark = document.createElement("div");
+        extraSpark.innerText = "💜";
+        extraSpark.classList.add("particle");
+        extraSpark.style.left = Math.random() * 100 + "%";
+        extraSpark.style.top = Math.random() * 80 + "%";
+        extraSpark.style.fontSize = "26px";
+        document.body.appendChild(extraSpark);
+        setTimeout(() => extraSpark.remove(), 2800);
+      }, i * 70);
+    }
+  }
+
+  function createHeavyLoveRain() {
+    let rainInterval = setInterval(() => {
+      if (!endingTriggered) return;
+      const particle = document.createElement("div");
+      const icons = ["💜", "🌸", "✨", "🦋", "🌙", "⭐", "💗", "🎀"];
+      particle.innerText = icons[Math.floor(Math.random() * icons.length)];
+      particle.classList.add("particle");
+      particle.style.left = Math.random() * 100 + "%";
+      particle.style.top = "-20px";
+      particle.style.fontSize = "22px";
+      particle.style.animationDuration = "2.5s";
+      document.body.appendChild(particle);
+      setTimeout(() => particle.remove(), 2800);
+    }, 400);
+    
+    // stop rain after 12 seconds but keep magic subtle
+    setTimeout(() => clearInterval(rainInterval), 13000);
+  }
+
+  // also, floating background messages: after final appears, additional sweet whispers
+  function addWhisperingMessages() {
+    const whispers = [
+      "Ryoko, eres mi poesía favorita.",
+      "Cada estrella me recuerda a ti.",
+      "Tus abrazos son mi lugar seguro.",
+      "Mi mundo tiene sentido gracias a ti."
+    ];
+    let idx = 0;
+    const whisperInterval = setInterval(() => {
+      if (!endingTriggered) {
+        clearInterval(whisperInterval);
+        return;
+      }
+      const whisperDiv = document.createElement("div");
+      whisperDiv.innerText = whispers[idx % whispers.length];
+      whisperDiv.style.position = "fixed";
+      whisperDiv.style.bottom = "12%";
+      whisperDiv.style.left = "50%";
+      whisperDiv.style.transform = "translateX(-50%)";
+      whisperDiv.style.backgroundColor = "rgba(0,0,0,0.5)";
+      whisperDiv.style.backdropFilter = "blur(10px)";
+      whisperDiv.style.padding = "6px 18px";
+      whisperDiv.style.borderRadius = "40px";
+      whisperDiv.style.color = "#fbc4ff";
+      whisperDiv.style.fontSize = "14px";
+      whisperDiv.style.zIndex = "250";
+      whisperDiv.style.whiteSpace = "nowrap";
+      whisperDiv.style.fontFamily = "monospace";
+      whisperDiv.style.opacity = "0";
+      whisperDiv.style.transition = "opacity 0.8s";
+      document.body.appendChild(whisperDiv);
+      setTimeout(() => { whisperDiv.style.opacity = "1"; }, 10);
+      setTimeout(() => {
+        whisperDiv.style.opacity = "0";
+        setTimeout(() => whisperDiv.remove(), 1000);
+      }, 3000);
+      idx++;
+    }, 5000);
+    setTimeout(() => clearInterval(whisperInterval), 30000);
+  }
+
+  // add a gentle initial vibe: ryoko and ahmad have little floating note
+  function initialStarDust() {
+    for (let i=0;i<30;i++) {
+      let dust = document.createElement("div");
+      dust.innerText = "✦";
+      dust.style.position = "absolute";
+      dust.style.left = Math.random() * 100 + "%";
+      dust.style.top = Math.random() * 100 + "%";
+      dust.style.color = "#ffb3f0";
+      dust.style.fontSize = "10px";
+      dust.style.opacity = "0.3";
+      dust.style.pointerEvents = "none";
+      document.body.appendChild(dust);
+    }
+  }
+
+  // when page fully loads
+  window.addEventListener("load", () => {
+    generateThoughts();
+    initialStarDust();
+    updateCounterUI();
+    // small delay: subtle message to start
+    setTimeout(() => {
+      if (!endingTriggered) {
+        showFloatingMessage("💜 toca los recuerdos... descubre lo que siento por ti, Ryoko 💜");
+      }
+    }, 1000);
+    addWhisperingMessages(); // will only trigger whispers after finale, but anyway check inside
+  });
+
+  // optional retry for music autoplay on user first click anywhere
+  function enableMusicOnFirstTouch() {
+    const audioEl = document.getElementById("bgMusic");
+    if (audioEl.paused && !endingTriggered) {
+      audioEl.play().catch(e=>{});
+    }
+    document.removeEventListener("click", enableMusicOnFirstTouch);
+    document.removeEventListener("touchstart", enableMusicOnFirstTouch);
+  }
+  document.addEventListener("click", enableMusicOnFirstTouch);
+  document.addEventListener("touchstart", enableMusicOnFirstTouch);
 </script>
-
 </body>
 </html>
